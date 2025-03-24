@@ -1,0 +1,10 @@
+numpy
+pandas
+scikit-learn
+matplotli
+seaborn
+scipy
+tqdm
+umap-learn 
+
+

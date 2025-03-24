@@ -1,155 +1,176 @@
-# Genetic Syndrome Classification Report
+# Relatório de Classificação de Síndromes Genéticas
 
-## Executive Summary
+## Resumo Executivo
 
-This report presents the analysis and classification of genetic syndrome embeddings derived from images. The embeddings are 320-dimensional vectors representing genetic syndrome characteristics. We performed data preprocessing, visualization using t-SNE, and classification using KNN with both Euclidean and Cosine distance metrics.
+Este relatório apresenta a análise e classificação de embeddings de síndromes genéticas derivados de imagens. Os embeddings são vetores de 320 dimensões que representam características de síndromes genéticas. Realizamos pré-processamento de dados, visualização usando t-SNE e classificação usando KNN com métricas de distância euclidiana e de cosseno.
 
-### Key Findings
+### Principais Descobertas
 
-- The dataset contains 60 images from 5 different genetic syndromes.
-- Each syndrome has an average of 12.00 images from 3.00 subjects.
-- The dataset shows some imbalance, with syndrome syndrome_001 having 12 images and syndrome syndrome_001 having only 12 images.
-- t-SNE visualization revealed 5 distinct clusters with 0 potential overlaps.
-- The Euclidean distance metric with k=10 performed best, achieving an accuracy of 1.0000 and AUC of 1.0000.
+- O conjunto de dados contém 60 imagens de 5 síndromes genéticas diferentes.
+- Cada síndrome tem uma média de 12.00 imagens de 3.00 sujeitos.
+- O conjunto de dados apresenta algum desequilíbrio, com a síndrome syndrome_001 tendo 12 imagens e a síndrome syndrome_001 tendo apenas 12 imagens.
+- A visualização t-SNE revelou 5 clusters distintos com 0 sobreposições potenciais.
+- A métrica de distância Euclidean com k=1 teve o melhor desempenho, alcançando uma precisão de 1.0000 e AUC de 1.0000.
 
-## Detailed Analysis
+## Análise Detalhada
 
-### 1. Dataset Statistics
+### 1. Estatísticas do Conjunto de Dados
 
 
-## General Statistics
-- Total number of images: 60
-- Number of syndromes: 5
-- Number of subjects: 15
-- Embedding dimension: 320
+## Estatísticas Gerais
+- Número total de imagens: 60
+- Número de síndromes: 5
+- Número de sujeitos: 15
+- Dimensão dos embeddings: 320
 
-## Distribution Statistics
-### Images per Syndrome
-- Mean: 12.00
-- Min: 12
-- Max: 12
-- Std: 0.00
+## Estatísticas de Distribuição
+### Imagens por Síndrome
+- Média: 12.00
+- Mínimo: 12
+- Máximo: 12
+- Desvio Padrão: 0.00
 
-### Subjects per Syndrome
-- Mean: 3.00
-- Min: 3
-- Max: 3
-- Std: 0.00
+### Sujeitos por Síndrome
+- Média: 3.00
+- Mínimo: 3
+- Máximo: 3
+- Desvio Padrão: 0.00
 
-## Syndrome Distribution
-| Syndrome ID | Number of Images |
-| ----------- | ---------------- |
+## Distribuição de Síndromes
+| ID da Síndrome | Número de Imagens |
+| -------------- | ----------------- |
 | syndrome_001 | 12 |
 | syndrome_002 | 12 |
 | syndrome_003 | 12 |
 | syndrome_004 | 12 |
 | syndrome_005 | 12 |
 
-
-### 2. Clustering Analysis
-
-
-## General Statistics
-- Number of clusters: 5
-- Potential cluster overlaps: 0
-
-## Cluster Relationships
-### Closest Clusters
-- Pair: ('syndrome_001', 'syndrome_002')
-- Distance: 5.8672
-
-### Furthest Clusters
-- Pair: ('syndrome_001', 'syndrome_005')
-- Distance: 28.2329
-
-## Cluster Dispersions
-| Cluster (Syndrome ID) | Dispersion |
-| --------------------- | ---------- |
-| syndrome_004 | 1.9780 |
-| syndrome_002 | 1.5728 |
-| syndrome_003 | 1.5720 |
-| syndrome_001 | 1.5048 |
-| syndrome_005 | 1.4823 |
+## Análise de Desequilíbrio de Dados
+- O conjunto de dados parece razoavelmente equilibrado em termos de imagens por síndrome.
 
 
-### 3. Cross-Validation Results
+### 2. Análise de Agrupamentos
 
 
-## Optimal k Values
-| Distance Metric | Optimal k | Accuracy |
-| --------------- | --------- | -------- |
-| euclidean | 10 | 1.0000 |
-| cosine | 1 | 0.3500 |
+## Estatísticas Gerais
+- Número de clusters: 5
+- Sobreposições potenciais entre clusters: 0
 
-## Performance Metrics for Each Configuration
+## Relações entre Clusters
+### Clusters Mais Próximos
+- Par: ('syndrome_001', 'syndrome_005')
+- Distância: 8.9715
 
-### Euclidean Distance Metric
-| k | Accuracy | Top-k Accuracy | F1-Score | AUC |
+### Clusters Mais Distantes
+- Par: ('syndrome_001', 'syndrome_004')
+- Distância: 28.3719
+
+## Dispersões de Clusters
+| Cluster (ID da Síndrome) | Dispersão |
+| ------------------------- | --------- |
+| syndrome_003 | 0.8127 |
+| syndrome_001 | 0.8117 |
+| syndrome_002 | 0.8104 |
+| syndrome_005 | 0.7996 |
+| syndrome_004 | 0.7540 |
+
+
+### 3. Resultados da Validação Cruzada
+
+
+## Valores Ótimos de k
+| Métrica de Distância | k Ótimo | Precisão |
+| --------------------- | ------- | -------- |
+| Euclidean | 1 | 1.0000 |
+| Cosine | 1 | 1.0000 |
+
+## Métricas de Desempenho para Cada Configuração
+
+### Métrica de Distância Euclidean
+| k | Precisão | Precisão Top-k | F1-Score | AUC |
 | - | -------- | -------------- | -------- | --- |
-| 1 | 0.9667 | 0.9667 | 0.9627 | 0.9715 |
-| 2 | 0.9500 | 0.9833 | 0.9567 | 0.9765 |
-| 3 | 0.9833 | 0.9833 | 0.9760 | 0.9790 |
-| 4 | 0.9833 | 1.0000 | 0.9760 | 0.9975 |
-| 5 | 0.9833 | 1.0000 | 0.9760 | 1.0000 |
-| 6 | 0.9833 | 1.0000 | 0.9760 | 1.0000 |
-| 7 | 0.9833 | 1.0000 | 0.9760 | 1.0000 |
-| 8 | 0.9833 | 1.0000 | 0.9760 | 1.0000 |
-| 9 | 0.9833 | 1.0000 | 0.9733 | 1.0000 |
+| **1** | **1.0000** | **1.0000** | **1.0000** | **1.0000** |
+| 2 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 3 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 4 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 5 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 6 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 7 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 8 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 9 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
 | 10 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
 | 11 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
 | 12 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
-| 13 | 0.9667 | 1.0000 | 0.9600 | 1.0000 |
-| 14 | 0.9667 | 1.0000 | 0.9600 | 1.0000 |
-| 15 | 0.9667 | 1.0000 | 0.9600 | 1.0000 |
+| 13 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 14 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 15 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
 
-### Cosine Distance Metric
-| k | Accuracy | Top-k Accuracy | F1-Score | AUC |
+### Métrica de Distância Cosine
+| k | Precisão | Precisão Top-k | F1-Score | AUC |
 | - | -------- | -------------- | -------- | --- |
-| 1 | 0.3500 | 0.6167 | 0.2409 | 0.5580 |
-| 2 | 0.3500 | 0.6167 | 0.2422 | 0.5660 |
-| 3 | 0.3167 | 0.5833 | 0.1989 | 0.5740 |
-| 4 | 0.3167 | 0.6667 | 0.1966 | 0.6060 |
-| 5 | 0.3000 | 0.6667 | 0.1789 | 0.6060 |
-| 6 | 0.2833 | 0.6167 | 0.1709 | 0.6140 |
-| 7 | 0.3167 | 0.6333 | 0.1909 | 0.6270 |
-| 8 | 0.3000 | 0.6500 | 0.1775 | 0.6320 |
-| 9 | 0.3000 | 0.6167 | 0.1766 | 0.6370 |
-| 10 | 0.3000 | 0.6500 | 0.1766 | 0.6410 |
-| 11 | 0.3000 | 0.7500 | 0.1909 | 0.6850 |
-| 12 | 0.3000 | 0.6833 | 0.1899 | 0.6890 |
-| 13 | 0.3000 | 0.6833 | 0.1899 | 0.6755 |
-| 14 | 0.2833 | 0.6833 | 0.1699 | 0.6570 |
-| 15 | 0.2833 | 0.6333 | 0.1699 | 0.6400 |
+| **1** | **1.0000** | **1.0000** | **1.0000** | **1.0000** |
+| 2 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 3 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 4 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 5 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 6 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 7 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 8 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 9 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 10 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 11 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 12 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 13 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 14 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+| 15 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
+
+## Análise de Tendências
+- Para a métrica de distância **Euclidean**, há uma tendência de **estabilidade** na precisão à medida que k aumenta.
+- Para a métrica de distância **Cosine**, há uma tendência de **estabilidade** na precisão à medida que k aumenta.
 
 
-### 4. Distance Metrics Comparison
+### 4. Comparação de Métricas de Distância
 
 
-| Distance Metric | Accuracy | Top-k Accuracy | F1-Score | AUC |
-| --------------- | -------- | -------------- | -------- | --- |
+| Métrica de Distância | Precisão | Precisão Top-k | F1-Score | AUC |
+| --------------------- | -------- | -------------- | -------- | --- |
 | Euclidean | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
-| Cosine | 0.3500 | 0.6167 | 0.2409 | 0.5580 |
+| Cosine | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
 
-## Comparison Analysis
-- **Accuracy**: Euclidean distance performs better by 0.6500
-- **AUC**: Euclidean distance performs better by 0.4420
-- **F1-Score**: Euclidean distance performs better by 0.7591
+## Análise Comparativa
+- **Melhor Precisão**: Euclidean (1.0000)
+- **Melhor Precisão Top-k**: Euclidean (1.0000)
+- **Melhor F1-Score**: Euclidean (1.0000)
+- **Melhor AUC**: Euclidean (1.0000)
 
-### Recommendation
-Based on the evaluation metrics, the **Euclidean distance** metric appears to perform better overall for this classification task.
+### Diferenças de Desempenho
+- **Diferença de Precisão**: 0.0000 (em favor de Cosine)
+- **Diferença de Precisão Top-k**: 0.0000
+- **Diferença de F1-Score**: 0.0000
+- **Diferença de AUC**: 0.0000
+
+### Recomendação
+Com base nas métricas de avaliação, a métrica de distância **Euclidean** parece ter melhor desempenho geral para esta tarefa de classificação.
+
+### Justificativa
+A métrica Euclidean demonstrou:
+- Maior precisão geral (1.0000)
+- Melhor equilíbrio entre precisão e recall, com F1-Score de 1.0000
+- Melhor poder discriminativo entre classes, com AUC de 1.0000
+- Melhor desempenho em precisão Top-k (1.0000)
 
 
-## Conclusion and Recommendations
+## Conclusão e Recomendações
 
-Based on the comprehensive analysis performed in this study, we can draw the following conclusions:
+Com base na análise abrangente realizada neste estudo, podemos tirar as seguintes conclusões:
 
-1. The Euclidean distance metric outperformed the other metrics for KNN classification of genetic syndromes.
-2. The optimal value of k for the KNN classifier was determined to be 10 through cross-validation.
-3. t-SNE visualization showed that some syndromes form distinct clusters, while others have potential overlap, which may affect classification performance.
+1. A métrica de distância Euclidean superou as outras métricas para classificação KNN de síndromes genéticas.
+2. O valor ótimo de k para o classificador KNN foi determinado como 1 através da validação cruzada.
+3. A visualização t-SNE mostrou que algumas síndromes formam clusters distintos, enquanto outras têm sobreposição potencial, o que pode afetar o desempenho da classificação.
 
-### Recommendations
+### Recomendações
 
-1. **Distance Metric Selection**: Use the Euclidean distance metric for KNN classification of genetic syndrome embeddings.
-2. **Parameter Tuning**: Set k=10 for optimal performance in the KNN classifier.
-4. **Further Improvements**: Consider exploring other classification algorithms like SVM or ensemble methods to potentially improve performance beyond the achieved accuracy of 1.0000.
-5. **Feature Engineering**: Investigate whether dimensionality reduction or feature selection could improve classification by reducing noise in the embeddings.
+1. **Seleção de Métricas de Distância**: Use a métrica de distância Euclidean para classificação KNN de embeddings de síndromes genéticas.
+2. **Ajuste de Parâmetros**: Defina k=1 para desempenho ótimo no classificador KNN.
+4. **Melhorias Adicionais**: Considere explorar outros algoritmos de classificação como SVM ou métodos ensemble para potencialmente melhorar o desempenho além da precisão alcançada de 1.0000.
+5. **Engenharia de Características**: Investigue se a redução de dimensionalidade ou seleção de características poderia melhorar a classificação reduzindo o ruído nos embeddings.
