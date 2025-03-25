@@ -39,7 +39,6 @@ class KNN:
         
         similarity = np.clip(similarity, -1.0, 1.0)
         
-        # Converter similaridade para distância (1 - similaridade)
         return 1.0 - similarity
     
     def _calculate_distances(self, x: np.ndarray) -> np.ndarray:
@@ -152,7 +151,7 @@ def find_optimal_k(results: Dict[str, Any]) -> Dict[str, Tuple[int, float]]:
      
         parts = key.split('_')
         method = parts[0]
-        k = int(parts[1][1:])  # Remover 'k' do início
+        k = int(parts[1][1:])  
         
     
         accuracies = []

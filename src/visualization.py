@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 from scipy.spatial.distance import pdist, squareform
 from typing import Dict, Tuple, List, Any, Optional
+
 logger = logging.getLogger(__name__)
+
 def apply_tsne(embeddings: np.ndarray, perplexity: int = 30, n_iter: int = 1000) -> np.ndarray:
 
     if perplexity >= embeddings.shape[0]:
@@ -36,6 +38,7 @@ def apply_tsne(embeddings: np.ndarray, perplexity: int = 30, n_iter: int = 1000)
         )
         reduced_embeddings = tsne.fit_transform(embeddings)
         return reduced_embeddings
+
 def visualize_embeddings(reduced_embeddings: np.ndarray, 
                         labels: np.ndarray, 
                         label_mapping: Dict[int, Any] = None,
@@ -57,7 +60,15 @@ def visualize_embeddings(reduced_embeddings: np.ndarray,
         points = reduced_embeddings[mask]
         
         if label_mapping is not None:
-            legend_label = label_mapping[label]
+            if hasattr(label, 'dtype') and np.issubdtype(label.dtype, np.integer):
+                label_key = int(label)
+            else:
+                try:
+                    label_key = int(label)
+                except (TypeError, ValueError):
+                    label_key = label
+                    
+            legend_label = label_mapping[label_key]
         else:
             legend_label = f"Class {label}"
         
@@ -83,6 +94,7 @@ def visualize_embeddings(reduced_embeddings: np.ndarray,
         logger.info(f"Visualização salva em {save_path}")
     
     return plt.gcf(), plt.gca()
+
 def analyze_clustering(reduced_embeddings: np.ndarray, 
                       labels: np.ndarray, 
                       label_mapping: Dict[int, Any] = None) -> Dict[str, Any]:
@@ -102,7 +114,15 @@ def analyze_clustering(reduced_embeddings: np.ndarray,
         distances = np.sqrt(np.sum((cluster_points - center) ** 2, axis=1))
         dispersion = np.mean(distances)
         
-        cluster_name = label_mapping[label] if label_mapping else f"Cluster {label}"
+        if hasattr(label, 'dtype') and np.issubdtype(label.dtype, np.integer):
+            label_key = int(label)
+        else:
+            try:
+                label_key = int(label)
+            except (TypeError, ValueError):
+                label_key = label
+                
+        cluster_name = label_mapping[label_key] if label_mapping else f"Cluster {label}"
         cluster_centers[cluster_name] = center
         cluster_dispersions[cluster_name] = dispersion
     
@@ -146,7 +166,16 @@ def analyze_clustering(reduced_embeddings: np.ndarray,
     for label in unique_labels:
         mask = labels == label
         cluster_points = reduced_embeddings[mask]
-        cluster_name = label_mapping[label] if label_mapping else f"Cluster {label}"
+        
+        if hasattr(label, 'dtype') and np.issubdtype(label.dtype, np.integer):
+            label_key = int(label)
+        else:
+            try:
+                label_key = int(label)
+            except (TypeError, ValueError):
+                label_key = label
+                
+        cluster_name = label_mapping[label_key] if label_mapping else f"Cluster {label}"
         if cluster_dispersions[cluster_name] > 0:
             density = len(cluster_points) / (cluster_dispersions[cluster_name] ** 2 * np.pi)
         else:

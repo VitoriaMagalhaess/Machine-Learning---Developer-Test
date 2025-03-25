@@ -32,6 +32,7 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
+
 def main(args):
     start_time = time()
     logger.info("Iniciando pipeline de classificação de síndromes genéticas")
@@ -171,6 +172,7 @@ def main(args):
     if args.verbose:
         print(f"\nTempo total de execução: {execution_time:.2f} segundos")
         print(f"Todos os resultados foram salvos em: {os.path.abspath('output')}")
+        
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Classificação de Síndromes Genéticas")

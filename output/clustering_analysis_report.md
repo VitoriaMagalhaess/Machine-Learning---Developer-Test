@@ -1,23 +1,23 @@
-# Relatório de Análise de Agrupamentos
+# Clustering Analysis Report
 
-## Estatísticas Gerais
-- Número de clusters: 5
-- Sobreposições potenciais entre clusters: 0
+## General Statistics
+- Number of clusters: 5
+- Potential cluster overlaps: 0
 
-## Relações entre Clusters
-### Clusters Mais Próximos
-- Par: ('syndrome_001', 'syndrome_005')
-- Distância: 8.9715
+## Cluster Relationships
+### Closest Clusters
+- Pair: ('syndrome_001', 'syndrome_005')
+- Distance: 8.9715
 
-### Clusters Mais Distantes
-- Par: ('syndrome_001', 'syndrome_004')
-- Distância: 28.3719
+### Furthest Clusters
+- Pair: ('syndrome_001', 'syndrome_004')
+- Distance: 28.3719
 
-## Dispersões de Clusters
-| Cluster (ID da Síndrome) | Dispersão |
-| ------------------------- | --------- |
-| syndrome_003 | 0.8127 |
+## Cluster Dispersions
+| Cluster (Syndrome ID) | Dispersion |
+| --------------------- | ---------- |
 | syndrome_001 | 0.8117 |
 | syndrome_002 | 0.8104 |
-| syndrome_005 | 0.7996 |
+| syndrome_003 | 0.8127 |
 | syndrome_004 | 0.7540 |
+| syndrome_005 | 0.7996 |

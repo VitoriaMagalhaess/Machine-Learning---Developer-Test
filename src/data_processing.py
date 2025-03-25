@@ -1,42 +1,27 @@
-import os
 import pickle
-import logging
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Tuple, Any
+from typing import Dict, Any, List, Tuple
+import logging
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
 def load_data(file_path: str) -> Dict[str, Any]:
-   
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(f"Arquivo não encontrado: {file_path}")
-    
     try:
+        logger.info(f"Loading data from {file_path}")
         with open(file_path, 'rb') as f:
             data = pickle.load(f)
+        logger.info("Data loaded successfully")
         return data
     except Exception as e:
-        logger.warning(f"Erro ao carregar o arquivo com método padrão: {e}")
-        
-        try:
-            with open(file_path, 'rb') as f:
-                data = pickle.load(f, encoding='bytes')
-            logger.info("Arquivo carregado com encoding='bytes'")
-            return data
-        except Exception as e2:
-            logger.warning(f"Erro ao carregar com encoding='bytes': {e2}")
-            
-            try:
-                with open(file_path, 'rb') as f:
-                    data = pickle.load(f, encoding='latin1')
-                logger.info("Arquivo carregado com encoding='latin1'")
-                return data
-            except Exception as e3:
-                raise Exception(f"Falha ao carregar arquivo pickle. Tentativas esgotadas: {e}, {e2}, {e3}")
+        logger.error(f"Error loading data: {e}")
+        raise
+
 def flatten_data(data: Dict[str, Dict[str, Dict[str, List[float]]]]) -> pd.DataFrame:
-  
-    rows = []
+    logger.info("Flattening hierarchical data structure")
     
+    rows = []
     for syndrome_id, subjects in data.items():
         for subject_id, images in subjects.items():
             for image_id, embedding in images.items():
@@ -47,116 +32,87 @@ def flatten_data(data: Dict[str, Dict[str, Dict[str, List[float]]]]) -> pd.DataF
                     'embedding': embedding
                 })
     
-    return pd.DataFrame(rows)
-def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
-   
-    na_count = df.isna().sum().sum()
-    if na_count > 0:
-        logger.warning(f"Encontrados {na_count} valores ausentes no conjunto de dados")
-
-        df = df.dropna()
-        logger.info(f"Linhas com valores ausentes removidas. Nova dimensão: {df.shape}")
-    
-    embedding_dimensions = [len(emb) for emb in df['embedding']]
-    
-    if len(set(embedding_dimensions)) > 1:
-        logger.warning("Embeddings têm dimensões inconsistentes")
-        
-        from collections import Counter
-        most_common_dim = Counter(embedding_dimensions).most_common(1)[0][0]
-        logger.info(f"Dimensão mais comum: {most_common_dim}")
-        
-        df = df[df['embedding'].apply(lambda x: len(x) == most_common_dim)]
-        logger.info(f"Filtrados embeddings para dimensão consistente. Nova dimensão: {df.shape}")
-    
-    if not isinstance(df.iloc[0]['embedding'], np.ndarray):
-        logger.info("Convertendo embeddings para arrays numpy")
-        df['embedding'] = df['embedding'].apply(lambda x: np.array(x, dtype=np.float32))
-    
+    df = pd.DataFrame(rows)
+    logger.info(f"Data flattened. Shape: {df.shape}")
     return df
-def get_dataset_statistics(df: pd.DataFrame) -> Dict[str, Any]:
-   
-    total_images = len(df)
-    syndromes = df['syndrome_id'].unique()
-    number_of_syndromes = len(syndromes)
-    subjects = df['subject_id'].unique()
-    number_of_subjects = len(subjects)
-    embedding_dim = len(df.iloc[0]['embedding'])
-    
-    syndrome_counts = df['syndrome_id'].value_counts().to_dict()
-    
-    syndrome_df = pd.DataFrame(list(syndrome_counts.items()), columns=['syndrome_id', 'count'])
-    
-    images_per_syndrome = {
-        'mean': syndrome_df['count'].mean(),
-        'min': syndrome_df['count'].min(),
-        'max': syndrome_df['count'].max(),
-        'std': syndrome_df['count'].std()
-    }
-    
-    subjects_per_syndrome = {}
-    for syndrome in syndromes:
-        subjects_per_syndrome[syndrome] = df[df['syndrome_id'] == syndrome]['subject_id'].nunique()
-    
-    subject_df = pd.DataFrame(list(subjects_per_syndrome.items()), columns=['syndrome_id', 'count'])
-    
-    subjects_per_syndrome_stats = {
-        'mean': subject_df['count'].mean(),
-        'min': subject_df['count'].min(),
-        'max': subject_df['count'].max(),
-        'std': subject_df['count'].std()
-    }
 
-    subject_to_syndromes = {}
-    for _, row in df[['subject_id', 'syndrome_id']].drop_duplicates().iterrows():
-        subject_id = row['subject_id']
-        syndrome_id = row['syndrome_id']
-        
-        if subject_id not in subject_to_syndromes:
-            subject_to_syndromes[subject_id] = []
-        
-        subject_to_syndromes[subject_id].append(syndrome_id)
+flatten_hierarchical_data = flatten_data
+
+def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
+    logger.info("Preprocessing data")
     
-    subjects_in_multiple_syndromes = [
-        (subject_id, syndromes) 
-        for subject_id, syndromes in subject_to_syndromes.items() 
-        if len(syndromes) > 1
-    ]
- 
+    missing_values = df.isnull().sum()
+    if missing_values.sum() > 0:
+        logger.warning(f"Missing values found: {missing_values}")
+        df = df.dropna()
+        logger.info(f"Rows with missing values dropped. New shape: {df.shape}")
+    
+    embedding_lengths = df['embedding'].apply(len)
+    if not (embedding_lengths == embedding_lengths.iloc[0]).all():
+        logger.warning("Inconsistent embedding dimensions found")
+        most_common_length = embedding_lengths.value_counts().idxmax()
+        df = df[df['embedding'].apply(len) == most_common_length]
+        logger.info(f"Filtered to embeddings with dimension {most_common_length}. New shape: {df.shape}")
+    
+    df['embedding'] = df['embedding'].apply(np.array)
+    
+    logger.info("Data preprocessing completed")
+    return df
+
+def get_dataset_statistics(df: pd.DataFrame) -> Dict[str, Any]:
+    logger.info("Generating dataset statistics")
+    
+    first_embedding = df['embedding'].iloc[0] if not df.empty else []
+    embedding_dim = len(first_embedding) if isinstance(first_embedding, (list, np.ndarray)) else 0
+    
     stats = {
-        'total_images': total_images,
-        'number_of_syndromes': number_of_syndromes,
-        'number_of_subjects': number_of_subjects,
-        'embedding_dim': embedding_dim,
-        'syndrome_distribution': syndrome_counts,
-        'images_per_syndrome': images_per_syndrome,
-        'subjects_per_syndrome_distribution': subjects_per_syndrome,
-        'subjects_per_syndrome': subjects_per_syndrome_stats,
-        'subjects_in_multiple_syndromes': subjects_in_multiple_syndromes,
-        'has_subjects_in_multiple_syndromes': len(subjects_in_multiple_syndromes) > 0
+        'total_images': len(df),
+        'number_of_syndromes': df['syndrome_id'].nunique(),
+        'number_of_subjects': df['subject_id'].nunique(),
+        'embedding_dimension': embedding_dim,
+        'syndrome_distribution': df['syndrome_id'].value_counts().to_dict(),
+        'images_per_syndrome': df.groupby('syndrome_id').size().describe().to_dict(),
+        'subjects_per_syndrome': df.groupby('syndrome_id')['subject_id'].nunique().describe().to_dict()
     }
     
+    logger.info(f"Dataset statistics generated. Total images: {stats['total_images']}, Total syndromes: {stats['number_of_syndromes']}")
     return stats
+
 def prepare_for_classification(df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray, Dict[int, str]]:
+    logger.info("Preparing data for classification")
     
-    X = np.array(df['embedding'].tolist())
+    X = np.stack(df['embedding'].values)
     
-    unique_syndromes = df['syndrome_id'].unique()
-    syndrome_to_int = {syndrome: i for i, syndrome in enumerate(unique_syndromes)}
-    int_to_syndrome = {i: syndrome for syndrome, i in syndrome_to_int.items()}
+    syndrome_mapping = {}
+    for i, syndrome in enumerate(df['syndrome_id'].unique()):
+        if hasattr(syndrome, 'dtype') and np.issubdtype(syndrome.dtype, np.integer):
+            syndrome_key = int(syndrome)
+        else:
+            try:
+                syndrome_key = int(syndrome)
+            except (TypeError, ValueError):
+                syndrome_key = syndrome
+                
+        syndrome_mapping[i] = syndrome_key
     
-    y = np.array([syndrome_to_int[syndrome] for syndrome in df['syndrome_id']])
+    inverse_mapping = {syndrome: i for i, syndrome in syndrome_mapping.items()}
     
-    return X, y, int_to_syndrome
+    y = np.array([inverse_mapping[df['syndrome_id'].iloc[i]] for i in range(len(df))])
+    
+    logger.info(f"Data prepared for classification. X shape: {X.shape}, y shape: {y.shape}")
+    return X, y, syndrome_mapping
+
+prepare_data_for_classification = prepare_for_classification
+
 def split_by_subject(df: pd.DataFrame) -> Dict[str, List[int]]:
-    subject_indices = {}
+    logger.info("Splitting data by subject")
     
-    for syndrome_id in df['syndrome_id'].unique():
-        syndrome_df = df[df['syndrome_id'] == syndrome_id]
+    subject_indices = {}
+    for syndrome_id, group in df.groupby('syndrome_id'):
         subject_indices[syndrome_id] = []
-        
-        for subject_id in syndrome_df['subject_id'].unique():
-            indices = syndrome_df[syndrome_df['subject_id'] == subject_id].index.tolist()
+        for subject_id, subject_group in group.groupby('subject_id'):
+            indices = subject_group.index.tolist()
             subject_indices[syndrome_id].append(indices)
     
+    logger.info("Data split by subject completed")
     return subject_indices
