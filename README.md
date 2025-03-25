@@ -1,5 +1,5 @@
-### MACHINE-LEARNING---DEVELOPER-TEST
-### LISTA DE COMANDOS PARA EXECUÇÃO DO CÓDIGO
+# MACHINE-LEARNING---DEVELOPER-TEST
+# LISTA DE COMANDOS PARA EXECUÇÃO DO CÓDIGO
 
 A seguir, apresenta-se um conjunto de comandos organizados para a correta execução do pipeline de análise, desde a configuração inicial do ambiente até a obtenção dos resultados finais.
 
@@ -7,20 +7,20 @@ A seguir, apresenta-se um conjunto de comandos organizados para a correta execu�
 
  Inicialmente é necessário preparar o ambiente de trabalho.
 
-# Criar Diretórios para Armazenamento de Dados e Resultados
+## Criar Diretórios para Armazenamento de Dados e Resultados
 
 mkdir -p data
 mkdir -p output
 
-# Objetivo: Criar as pastas "data" e "output" para armazenar os arquivos de entrada e saída, respectivamente.
+### Objetivo: Criar as pastas "data" e "output" para armazenar os arquivos de entrada e saída, respectivamente.
 
 ## Instalar as Bibliotecas Necessárias
 
 pip install numpy pandas scikit-learn matplotlib scipy tqdm
 
-# Objetivo: Instalar todas as bibliotecas Python utilizadas no projeto, garantindo que o ambiente possua os pacotes necessários para a execução do código.
+### Objetivo: Instalar todas as bibliotecas Python utilizadas no projeto, garantindo que o ambiente possua os pacotes necessários para a execução do código.
 
-# Execução do Pipeline de Análise
+## Execução do Pipeline de Análise
 
 Após a configuração inicial, deve-se proceder com a geração dos dados de amostra, análise dos dados e execução do modelo de classificação.
 
@@ -28,19 +28,19 @@ Após a configuração inicial, deve-se proceder com a geração dos dados de am
 
 python create_sample_data.py
 
-# Objetivo: Criar um arquivo pickle contendo um conjunto de dados simulados, composto por 60 embeddings de 5 síndromes, que será utilizado para testes e validação do sistema.
+### Objetivo: Criar um arquivo pickle contendo um conjunto de dados simulados, composto por 60 embeddings de 5 síndromes, que será utilizado para testes e validação do sistema.
 
 ## Visualizar a Estrutura do Arquivo de Dados
 
 python view_pickle.py --pickle_file data/sample_data.p
 
-# Objetivo: Exibir a estrutura e o conteúdo do arquivo de dados, apresentando informações como síndromes, sujeitos e embeddings armazenados no dataset.
+### Objetivo: Exibir a estrutura e o conteúdo do arquivo de dados, apresentando informações como síndromes, sujeitos e embeddings armazenados no dataset.
 
 ## Executar o Pipeline Completo de Análise
 
 python main.py --data_file data/sample_data.p
 
-# Objetivo:Executar todas as etapas do pipeline, incluindo:
+### Objetivo:Executar todas as etapas do pipeline, incluindo:
 
 Processamento de dados
 
@@ -54,7 +54,7 @@ Geração de relatórios e métricas de avaliação
 
 python main.py --data_file data/sample_data.p --verbose
 
-# Objetivo: Executar o pipeline completo e exibir relatórios detalhados diretamente no terminal para um acompanhamento mais informativo.
+### Objetivo: Executar o pipeline completo e exibir relatórios detalhados diretamente no terminal para um acompanhamento mais informativo.
 
 ## Análise dos Resultados
 
@@ -64,25 +64,25 @@ Após a execução do código, os resultados serão armazenados no diretório "o
 
 ls -la output/
 
-# Objetivo: Exibir todos os arquivos presentes no diretório de saída, possibilitando a verificação dos resultados gerados.
+### Objetivo: Exibir todos os arquivos presentes no diretório de saída, possibilitando a verificação dos resultados gerados.
 
 ## Verificar o Relatório Resumido da Análise
 
 cat output/summary_report.md
 
-# Objetivo: Apresentar um resumo geral da análise, incluindo as principais métricas e conclusões obtidas.
+### Objetivo: Apresentar um resumo geral da análise, incluindo as principais métricas e conclusões obtidas.
 
 ## Verificar Estatísticas do Conjunto de Dados
 
 cat output/dataset_statistics_report.md
 
-# Objetivo: Exibir estatísticas detalhadas sobre o dataset analisado, como distribuição de síndromes e quantidade de imagens por classe.
+### Objetivo: Exibir estatísticas detalhadas sobre o dataset analisado, como distribuição de síndromes e quantidade de imagens por classe.
 
 ## Verificar os Resultados da Validação Cruzada
 
 cat output/cross_validation_report.md
 
-# Apresentar os resultados detalhados da validação cruzada realizada durante a classificação, incluindo métricas como AUC, F1-Score e Top-k Accuracy.
+## Apresentar os resultados detalhados da validação cruzada realizada durante a classificação, incluindo métricas como AUC, F1-Score e Top-k Accuracy.
 
 ## Sequência Recomendada para Execução Completa
 
@@ -96,7 +96,7 @@ python main.py --data_file data/sample_data.p
 ls -la output/
 cat output/summary_report.md
 
-# Essa sequência garante que:
+## Essa sequência garante que:
 
 As pastas necessárias sejam criadas.
 
